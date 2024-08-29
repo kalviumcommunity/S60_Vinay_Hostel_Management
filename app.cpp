@@ -4,27 +4,17 @@
 #include <iostream>
 #include <stdlib.h>
 #include <algorithm>
-#include <iomanip>
+#include <iostream>
 using namespace std;
 
-
-//
-//  learn.cpp
-//  CPP
-//
-//  Created by Vinnu Gollakoti on 29/08/24.
-//
-
-class Hostel{
+class Hostel {
 private:
     string hostelName;
     int roomNumber;
-    string betType;
-    
-    
+    string bedType;
 public:
     void check() {
-        cout << "Hello, Room are available in this hostel" << endl;
+        cout << "Hello, Rooms are available in this hostel" << endl;
     }
 };
 
@@ -39,10 +29,11 @@ public:
 };
 
 int main() {
-    Hostel mh3;
-    User Vinay;
-    
-    mh3.check();
-    Vinay.bookRoom(26);
+    Hostel *mh3 = new Hostel;
+    User *Vinay = new User;
+    mh3->check();
+    Vinay->bookRoom(26);
+    delete mh3;
+    delete Vinay;
     return 0;
 }
