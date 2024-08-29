@@ -1,20 +1,52 @@
-#include <cmath>
-#include <cstdio>
-#include <vector>
-#include <iostream>
-#include <stdlib.h>
-#include <algorithm>
 #include <iostream>
 using namespace std;
 
-class Hostel {
+class Hostels {
 private:
     string hostelName;
-    int roomNumber;
+    int noOfRooms;
     string bedType;
+    bool isBooked;
+
 public:
-    void check() {
-        cout << "Hello, Rooms are available in this hostel" << endl;
+    Hostels() : hostelName(""), noOfRooms(0), bedType(""), isBooked(false) {}
+    
+    Hostels(string name, int rooms, string type, bool bookedStatus)
+        : hostelName(name), noOfRooms(rooms), bedType(type), isBooked(bookedStatus) {}
+
+    
+    void uploadHostel(string name, int rooms, string type, bool bookedStatus) {
+        hostelName = name;
+        noOfRooms = rooms;
+        bedType = type;
+        isBooked = bookedStatus;
+        cout << "Hostel details updated:\n";
+        displayHostel();
+    }
+
+    
+    void displayHostel() const {
+        cout << "Hostel name: " << hostelName << "\n"
+             << "Number of rooms: " << noOfRooms << "\n"
+             << "Bed type: " << bedType << "\n"
+             << "Booked status: " << (isBooked ? "Booked" : "Available") << "\n";
+    }
+
+    
+    bool isAvailable() const {
+        return !isBooked && noOfRooms > 0;
+    }
+
+    
+    bool bookRoom() {
+        if (isAvailable()) {
+            isBooked = true;
+            cout << "Room successfully booked at " << hostelName << "\n";
+            return true;
+        } else {
+            cout << "No available rooms at " << hostelName << "\n";
+            return false;
+        }
     }
 };
 
@@ -29,11 +61,18 @@ public:
 };
 
 int main() {
-    Hostel *mh3 = new Hostel;
-    User *Vinay = new User;
-    mh3->check();
-    Vinay->bookRoom(26);
-    delete mh3;
-    delete Vinay;
+        Hostels hostels[3] = {
+            Hostels("Mens hostel 1", 50, "Single", false),
+            Hostels("Mens hostel 2", 30, "Double", false),
+            Hostels("Ladies hostel 1", 20, "Triple", true)
+        };
+        for (int i = 0; i < 3; ++i) {
+            hostels[i].displayHostel();
+        }
+        for (int i = 0; i < 3; ++i) {
+            cout << "Attempting to book a room in " << hostels[i].isAvailable() << endl;
+            hostels[i].bookRoom();
+        }
+    
     return 0;
 }
