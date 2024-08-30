@@ -9,12 +9,18 @@ private:
     bool isBooked;
 
 public:
+    // Default constructor
     Hostels() : hostelName(""), noOfRooms(0), bedType(""), isBooked(false) {}
-    
-    Hostels(string name, int rooms, string type, bool bookedStatus)
-        : hostelName(name), noOfRooms(rooms), bedType(type), isBooked(bookedStatus) {}
 
-    
+    // Parameterized constructor
+    Hostels(string name, int rooms,string type, bool bookedStatus) {
+            hostelName = name;
+            noOfRooms = rooms;
+            bedType = type;
+            isBooked = bookedStatus;
+        }
+
+    // Method to upload hostel information
     void uploadHostel(string name, int rooms, string type, bool bookedStatus) {
         hostelName = name;
         noOfRooms = rooms;
@@ -24,7 +30,7 @@ public:
         displayHostel();
     }
 
-    
+    // Method to display hostel details
     void displayHostel() const {
         cout << "Hostel name: " << hostelName << "\n"
              << "Number of rooms: " << noOfRooms << "\n"
@@ -32,12 +38,12 @@ public:
              << "Booked status: " << (isBooked ? "Booked" : "Available") << "\n";
     }
 
-    
+    // Check availability of the hostel
     bool isAvailable() const {
         return !isBooked && noOfRooms > 0;
     }
 
-    
+    // Book a room in the hostel
     bool bookRoom() {
         if (isAvailable()) {
             isBooked = true;
@@ -50,6 +56,7 @@ public:
     }
 };
 
+
 class User {
 private:
     string name;
@@ -61,18 +68,23 @@ public:
 };
 
 int main() {
-        Hostels hostels[3] = {
-            Hostels("Mens hostel 1", 50, "Single", false),
-            Hostels("Mens hostel 2", 30, "Double", false),
-            Hostels("Ladies hostel 1", 20, "Triple", true)
-        };
-        for (int i = 0; i < 3; ++i) {
-            hostels[i].displayHostel();
-        }
-        for (int i = 0; i < 3; ++i) {
-            cout << "Attempting to book a room in " << hostels[i].isAvailable() << endl;
-            hostels[i].bookRoom();
-        }
+    const int numHostels = 3;
+    Hostels* hostels[numHostels];
     
+    hostels[0] = new Hostels("Mens hotel 1", 50, "Single", false);
+    hostels[1] = new Hostels("Mens hotel 2", 30, "Double", false);
+    hostels[2] = new Hostels("Ladies hotel 1", 20, "Double", true);
+
+    for (int i = 0; i < numHostels; ++i) {
+        hostels[i]->displayHostel();
+    }
+    for (int i = 0; i < numHostels; ++i) {
+        cout << "Attempting to book a room in " << (hostels[i]->isAvailable() ? "available hostel" : "unavailable hostel") << endl;
+        hostels[i]->bookRoom();
+    }
+    for (int i = 0; i < numHostels; ++i) {
+        delete hostels[i];
+    }
+
     return 0;
 }
