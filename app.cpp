@@ -9,10 +9,8 @@ private:
     bool isBooked;
 
 public:
-    // Default constructor
     Hostels() : hostelName(""), noOfRooms(0), bedType(""), isBooked(false) {}
 
-    // Parameterized constructor
     Hostels(string name, int rooms,string type, bool bookedStatus) {
             hostelName = name;
             noOfRooms = rooms;
@@ -20,7 +18,6 @@ public:
             isBooked = bookedStatus;
         }
 
-    // Method to upload hostel information
     void uploadHostel(string name, int rooms, string type, bool bookedStatus) {
         hostelName = name;
         noOfRooms = rooms;
@@ -30,7 +27,6 @@ public:
         displayHostel();
     }
 
-    // Method to display hostel details
     void displayHostel() const {
         cout << "Hostel name: " << hostelName << "\n"
              << "Number of rooms: " << noOfRooms << "\n"
@@ -38,12 +34,10 @@ public:
              << "Booked status: " << (isBooked ? "Booked" : "Available") << "\n";
     }
 
-    // Check availability of the hostel
     bool isAvailable() const {
         return !isBooked && noOfRooms > 0;
     }
 
-    // Book a room in the hostel
     bool bookRoom() {
         if (isAvailable()) {
             isBooked = true;
