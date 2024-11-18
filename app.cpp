@@ -25,6 +25,7 @@ public:
         }
     }
 
+    // Destructor
     ~Hostels() {
         totalHostels--;
         if (isBooked) {
@@ -32,23 +33,19 @@ public:
         }
     }
 
-    // Accessor and Mutator Methods for Hostel Name
     string getHostelName() const { return hostelName; }
     void setHostelName(const string& name) { hostelName = name; }
 
-    // Accessor and Mutator Methods for Number of Rooms
     int getNoOfRooms() const { return noOfRooms; }
     void setNoOfRooms(int rooms) { noOfRooms = rooms; }
 
-    // Accessor and Mutator Methods for Bed Type
     string getBedType() const { return bedType; }
     void setBedType(const string& type) { bedType = type; }
 
-    // Accessor and Mutator Methods for Booked Status
     bool getIsBooked() const { return isBooked; }
     void setIsBooked(bool bookedStatus) { isBooked = bookedStatus; }
 
-
+    // Method to update hostel details
     void uploadHostel(string name, int rooms, string type, bool bookedStatus) {
         setHostelName(name);
         setNoOfRooms(rooms);
@@ -99,12 +96,16 @@ private:
     vector<Hostels*> bookedHostels;
 
 public:
+    User(string name) : userName(name) {}
+
     // Accessor and Mutator Methods for User Name
     string getUserName() const { return userName; }
     void setUserName(const string& name) { userName = name; }
 
+    // Accessor Method for Booked Hostels (no mutator needed here, so only getter)
     vector<Hostels*> getBookedHostels() const { return bookedHostels; }
 
+    // Method to book a hostel for the user
     void bookHostel(Hostels* hostel) {
         if (hostel->bookRoom()) {
             bookedHostels.push_back(hostel);
@@ -128,16 +129,13 @@ int main() {
         hostels[i]->displayHostel();
     }
     
-    // Create a User object and demonstrate booking
-    User user1;
-    user1.setUserName("John Doe");
+    User user1("John Doe");
 
     for (int i = 0; i < numHostels; ++i) {
         cout << "Attempting to book a room in " << (hostels[i]->isAvailable() ? "available hostel" : "unavailable hostel") << endl;
         user1.bookHostel(hostels[i]);
     }
 
-    // Displaying updated hostel details and stats
     for (int i = 0; i < numHostels; ++i) {
         cout << "Displaying updated hostel details:\n";
         hostels[i]->displayHostel();
