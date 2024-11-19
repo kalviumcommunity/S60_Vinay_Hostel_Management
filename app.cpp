@@ -98,6 +98,22 @@ public:
         }
     }
 
+    // Overloaded bookRoom method (Polymorphism: Function Overloading)
+    bool bookRoom(Room* room) {
+        if (room && isAvailable()) {
+            cout << "Room of type " << room->displayRoomDetails() << " booked at " << hostelName << "\n";
+            noOfRooms--;
+            totalBookedRooms++;
+            if (noOfRooms == 0) {
+                isBooked = true;
+            }
+            return true;
+        } else {
+            cout << "No available rooms of this type at " << hostelName << "\n";
+            return false;
+        }
+    }
+
     virtual void displayHostel() const {
         cout << "Hostel name: " << hostelName << "\n"
              << "Number of rooms: " << noOfRooms << "\n"
@@ -156,6 +172,14 @@ public:
             cout << userName << " successfully booked a room at " << hostel->getHostelName() << endl;
         }
     }
+
+    // Method to book a specific type of room
+    void bookRoomByType(Hostels* hostel, Room* room) {
+        if (hostel->bookRoom(room)) {
+            bookedHostels.push_back(hostel);
+            cout << userName << " successfully booked a " << room->displayRoomDetails() << " at " << hostel->getHostelName() << endl;
+        }
+    }
 };
 
 int main() {
@@ -180,12 +204,12 @@ int main() {
     
     User user1("John Doe");
 
-    // Trying to book rooms
+    // Trying to book rooms using the overloaded function (Polymorphism: Function Overloading)
     for (int i = 0; i < numHostels; ++i) {
         cout << "Attempting to book a room in " << (hostels[i]->isAvailable() ? "available hostel" : "unavailable hostel") << endl;
-        user1.bookHostel(hostels[i]);
+        user1.bookRoomByType(hostels[i], room1);  // Booking a Single Room type specifically
     }
-    
+
     // Displaying updated hostel details
     for (int i = 0; i < numHostels; ++i) {
         cout << "Displaying updated hostel details:\n";
@@ -194,6 +218,7 @@ int main() {
 
     Hostels::displayStats();
 
+    // Cleanup
     for (int i = 0; i < numHostels; ++i) {
         delete hostels[i];
     }
