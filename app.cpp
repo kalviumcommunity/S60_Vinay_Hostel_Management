@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-// Base class for Room
+// Abstract class for Room
 class Room {
 protected:
     string bedType;
@@ -41,7 +41,7 @@ public:
     }
 };
 
-// Base class for Hostels
+// Abstract class for Hostels (Abstract because it has a pure virtual function)
 class Hostels {
 private:
     string hostelName;
@@ -114,12 +114,8 @@ public:
         }
     }
 
-    virtual void displayHostel() const {
-        cout << "Hostel name: " << hostelName << "\n"
-             << "Number of rooms: " << noOfRooms << "\n"
-             << "Booked status: " << (isBooked ? "Booked" : "Available") << "\n";
-        roomType->displayRoomDetails(); // Display specific room details
-    }
+    // Pure virtual function (makes Hostels an abstract class)
+    virtual void displayHostel() const = 0;
 
     static void displayStats() {
         cout << "Total hostels: " << totalHostels << "\n";
@@ -136,6 +132,7 @@ public:
     MensHostel(string name, int rooms, Room* room, bool bookedStatus)
         : Hostels(name, rooms, room, bookedStatus) {}
 
+    // Overriding the pure virtual function
     void displayHostel() const override {
         cout << "Mens Hostel - ";
         Hostels::displayHostel();
@@ -148,6 +145,7 @@ public:
     LadiesHostel(string name, int rooms, Room* room, bool bookedStatus)
         : Hostels(name, rooms, room, bookedStatus) {}
 
+    // Overriding the pure virtual function
     void displayHostel() const override {
         cout << "Ladies Hostel - ";
         Hostels::displayHostel();
