@@ -13,9 +13,11 @@ private:
     static int totalBookedRooms;
 
 public:
+    // this is the constructor
     Hostels() : hostelName(""), noOfRooms(0), bedType(""), isBooked(false) {
         totalHostels++;
     }
+
 
     Hostels(string name, int rooms, string type, bool bookedStatus)
         : hostelName(name), noOfRooms(rooms), bedType(type), isBooked(bookedStatus) {
@@ -24,8 +26,7 @@ public:
             totalBookedRooms++;
         }
     }
-
-    // Destructor
+    // this is the function for destructor adding ~ before the class name
     ~Hostels() {
         totalHostels--;
         if (isBooked) {
