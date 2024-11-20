@@ -3,6 +3,7 @@
 using namespace std;
 
 // Abstract class for Room
+// SRP: The Room class is solely responsible for managing room details.
 class Room {
 protected:
     string bedType;
@@ -20,6 +21,7 @@ public:
 };
 
 // Derived class for Single Room
+// SRP: The SingleRoom class is responsible only for the details specific to a Single Room.
 class SingleRoom : public Room {
 public:
     SingleRoom() : Room("Single", 1) {}
@@ -31,6 +33,7 @@ public:
 };
 
 // Derived class for Double Room
+// SRP: The DoubleRoom class is responsible only for the details specific to a Double Room.
 class DoubleRoom : public Room {
 public:
     DoubleRoom() : Room("Double", 2) {}
@@ -41,7 +44,41 @@ public:
     }
 };
 
-// Abstract class for Hostels (Abstract because it has a pure virtual function)
+// Class responsible for managing statistics of hostels and booked rooms
+// SRP: The HostelStats class is solely responsible for tracking and displaying hostel statistics.
+class HostelStats {
+private:
+    static int totalHostels;
+    static int totalBookedRooms;
+
+public:
+    static void incrementTotalHostels() {
+        totalHostels++;
+    }
+
+    static void decrementTotalHostels() {
+        totalHostels--;
+    }
+
+    static void incrementTotalBookedRooms() {
+        totalBookedRooms++;
+    }
+
+    static void decrementTotalBookedRooms() {
+        totalBookedRooms--;
+    }
+
+    static void displayStats() {
+        cout << "Total hostels: " << totalHostels << "\n";
+        cout << "Total booked rooms: " << totalBookedRooms << "\n";
+    }
+};
+
+int HostelStats::totalHostels = 0;
+int HostelStats::totalBookedRooms = 0;
+
+// Abstract class for Hostels
+// SRP: The Hostels class is responsible for booking rooms, managing room availability, and related operations.
 class Hostels {
 private:
     string hostelName;
@@ -49,26 +86,21 @@ private:
     Room* roomType;
     bool isBooked;
 
-    static int totalHostels;
-    static int totalBookedRooms;
-
 public:
     // Constructor for Hostel
     Hostels(string name, int rooms, Room* room, bool bookedStatus)
         : hostelName(name), noOfRooms(rooms), roomType(room), isBooked(bookedStatus) {
-        totalHostels++;
-        if (isBooked) {
-            totalBookedRooms++;
-        }
+        HostelStats::incrementTotalHostels(); // Keep track of total hostels
     }
 
-    // Destructor to manage static variables
+    // Destructor to manage static variables and delete room objects
+    // SRP: The Hostels class is responsible for its own destruction and clean-up.
     virtual ~Hostels() {
-        totalHostels--;
+        HostelStats::decrementTotalHostels();  // Decrement total hostels on deletion
         if (isBooked) {
-            totalBookedRooms--;
+            HostelStats::decrementTotalBookedRooms(); // Decrement booked rooms on deletion
         }
-        delete roomType;  // Deleting dynamically allocated room
+        delete roomType;  // Delete dynamically allocated room
     }
 
     string getHostelName() const { return hostelName; }
@@ -83,11 +115,13 @@ public:
         return !isBooked && noOfRooms > 0;
     }
 
+    // Booking a room at the hostel
+    // SRP: The Hostels class is responsible for the booking logic and availability checking.
     bool bookRoom() {
         if (isAvailable()) {
             cout << "Room successfully booked at " << hostelName << "\n";
             noOfRooms--;
-            totalBookedRooms++;
+            HostelStats::incrementTotalBookedRooms(); // Update booked rooms
             if (noOfRooms == 0) {
                 isBooked = true;
             }
@@ -99,11 +133,12 @@ public:
     }
 
     // Overloaded bookRoom method (Polymorphism: Function Overloading)
+    // SRP: Handles booking rooms based on room type.
     bool bookRoom(Room* room) {
         if (room && isAvailable()) {
             cout << "Room of type " << room->displayRoomDetails() << " booked at " << hostelName << "\n";
             noOfRooms--;
-            totalBookedRooms++;
+            HostelStats::incrementTotalBookedRooms(); // Update booked rooms
             if (noOfRooms == 0) {
                 isBooked = true;
             }
@@ -115,43 +150,40 @@ public:
     }
 
     // Pure virtual function (makes Hostels an abstract class)
+    // SRP: The Hostels class is responsible for providing an interface for its derived classes.
     virtual void displayHostel() const = 0;
-
-    static void displayStats() {
-        cout << "Total hostels: " << totalHostels << "\n";
-        cout << "Total booked rooms: " << totalBookedRooms << "\n";
-    }
 };
 
-int Hostels::totalHostels = 0;
-int Hostels::totalBookedRooms = 0;
-
 // Derived class for MensHostel
+// SRP: The MensHostel class is responsible for representing the details of a men's hostel.
 class MensHostel : public Hostels {
 public:
     MensHostel(string name, int rooms, Room* room, bool bookedStatus)
         : Hostels(name, rooms, room, bookedStatus) {}
 
     // Overriding the pure virtual function
+    // SRP: The MensHostel class provides specific implementation for displaying hostel details.
     void displayHostel() const override {
         cout << "Mens Hostel - ";
-        Hostels::displayHostel();
     }
 };
 
 // Derived class for LadiesHostel
+// SRP: The LadiesHostel class is responsible for representing the details of a ladies' hostel.
 class LadiesHostel : public Hostels {
 public:
     LadiesHostel(string name, int rooms, Room* room, bool bookedStatus)
         : Hostels(name, rooms, room, bookedStatus) {}
 
     // Overriding the pure virtual function
+    // SRP: The LadiesHostel class provides specific implementation for displaying hostel details.
     void displayHostel() const override {
         cout << "Ladies Hostel - ";
-        Hostels::displayHostel();
     }
 };
 
+// User class responsible for booking hostels
+// SRP: The User class is responsible for managing the user's booking process.
 class User {
 private:
     string userName;
@@ -164,6 +196,7 @@ public:
 
     vector<Hostels*> getBookedHostels() const { return bookedHostels; }
 
+    // SRP: The User class is responsible for booking hostels, not managing the hostel's internal details.
     void bookHostel(Hostels* hostel) {
         if (hostel->bookRoom()) {
             bookedHostels.push_back(hostel);
@@ -171,7 +204,7 @@ public:
         }
     }
 
-    // Method to book a specific type of room
+    // SRP: The User class is responsible for booking rooms of specific types at a hostel.
     void bookRoomByType(Hostels* hostel, Room* room) {
         if (hostel->bookRoom(room)) {
             bookedHostels.push_back(hostel);
@@ -214,11 +247,11 @@ int main() {
         hostels[i]->displayHostel();
     }
 
-    Hostels::displayStats();
+    HostelStats::displayStats();
 
     // Cleanup
     for (int i = 0; i < numHostels; ++i) {
-        delete hostels[i];
+        delete hostels[i];  // Clean up allocated memory
     }
 
     return 0;
