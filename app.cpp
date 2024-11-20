@@ -197,42 +197,36 @@ public:
     }
 };
 
-int main() {
-    const int numHostels = 5;
-    Hostels* hostels[numHostels];
-
+// Liskov Substitution Principle Test
+void testLSP() {
+    // We can substitute any derived class (SingleRoom, DoubleRoom, DeluxeRoom) for Room
     Room* room1 = new SingleRoom();
     Room* room2 = new DoubleRoom();
     Room* room3 = new DeluxeRoom(); // New type of room
-
-    hostels[0] = new MensHostel("Mens hotel 1", 50, room1, false);
-    hostels[1] = new MensHostel("Mens hotel 2", 1, room2, false);
-    hostels[2] = new LadiesHostel("Ladies hotel 1", 20, room2, true);
-    hostels[3] = new MensHostel("Mens hotel 3", 10, room1, false);
-    hostels[4] = new VIPHostel("VIP hotel 1", 5, room3, false); // New type of hostel
-
-    for (int i = 0; i < numHostels; ++i) {
-        cout << "Displaying hostel capacities fully:\n";
-        hostels[i]->displayHostel();
-    }
     
-    User user1("John Doe");
+    // Creating hostels with different room types
+    Hostels* hostel1 = new MensHostel("Mens Hotel 1", 10, room1, false);
+    Hostels* hostel2 = new LadiesHostel("Ladies Hotel 1", 20, room2, false);
+    Hostels* hostel3 = new VIPHostel("VIP Hotel 1", 5, room3, false); // New type of hostel
 
-    for (int i = 0; i < numHostels; ++i) {
-        cout << "Attempting to book a room in " << (hostels[i]->isAvailable() ? "available hostel" : "unavailable hostel") << endl;
-        user1.bookRoomByType(hostels[i], room1);
-    }
+    // **Liskov Substitution Principle in action**:
+    // We are able to substitute any derived type (MensHostel, LadiesHostel, VIPHostel) for Hostels
+    hostel1->bookRoom(); // Works with MensHostel, as it is a derived class of Hostels
+    hostel2->bookRoom(); // Works with LadiesHostel
+    hostel3->bookRoom(); // Works with VIPHostel, which is a new derived class of Hostels
 
-    for (int i = 0; i < numHostels; ++i) {
-        cout << "Displaying updated hostel details:\n";
-        hostels[i]->displayHostel();
-    }
+    // Deleting dynamically allocated objects
+    delete hostel1;
+    delete hostel2;
+    delete hostel3;
+}
 
+int main() {
+    // Run LSP test to demonstrate Liskov Substitution Principle
+    testLSP();
+    
+    // Displaying hostel statistics
     HostelStats::displayStats();
-
-    for (int i = 0; i < numHostels; ++i) {
-        delete hostels[i]; 
-    }
 
     return 0;
 }
